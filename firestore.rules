@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. catch-all default deny to implement zero-trust
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global reusable helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedAdmin() {
+      return isSignedIn() && 
+             (
+               request.auth.token.email == 'mawanta@eka-prasetya.ac.id' || 
+               request.auth.token.email.endsWith('@eka-prasetya.ac.id') ||
+               exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+             );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 2. Collection matches
+    
+    // Configs collection (Stores global configuration under 'frontpage')
+    match /configs/{configId} {
+      allow read: if true; // Public access for displaying content
+      allow write: if isVerifiedAdmin(); // Restricted to admins
+    }
+
+    // Registrations collection
+    match /registrations/{registrationId} {
+      allow read: if true; // Public list and search
+      allow create: if request.resource.data.keys().hasAll(['id', 'name', 'email', 'institution', 'country', 'phone', 'role', 'registeredAt']) 
+                    && request.resource.data.name is string && request.resource.data.name.size() <= 200
+                    && request.resource.data.email is string && request.resource.data.email.size() <= 150
+                    && request.resource.data.id == registrationId;
+      allow update, delete: if isVerifiedAdmin();
+    }
+
+    // Submissions collection
+    match /submissions/{submissionId} {
+      allow read: if true; // Public list and search
+      allow create: if request.resource.data.keys().hasAll(['id', 'title', 'presenterName', 'presenterEmail', 'institution', 'track', 'abstractText', 'keywords', 'status', 'reviewScore', 'grammarRating', 'noveltyRating', 'clarityRating', 'peerReviewer', 'feedback', 'suggestions', 'submittedAt']) 
+                    && request.resource.data.title is string && request.resource.data.title.size() <= 500
+                    && request.resource.data.presenterEmail is string && request.resource.data.presenterEmail.size() <= 150
+                    && request.resource.data.id == submissionId;
+      allow update, delete: if isVerifiedAdmin();
+    }
+  }
+}

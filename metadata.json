@@ -1,0 +1,6 @@
+{
+  "name": "IBEC Conference Hub",
+  "description": "Website International Business and Economics Conference (IBEC) dengan pendaftaran peserta dan unggah abstrak karya ilmiah otomatis bertenaga AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

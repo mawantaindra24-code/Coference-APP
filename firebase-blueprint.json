@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Conference registration details for participants",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "institution": { "type": "string" },
+        "country": { "type": "string" },
+        "phone": { "type": "string" },
+        "role": { "type": "string" },
+        "category": { "type": "string" },
+        "paymentProof": { "type": "string" },
+        "registeredAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "email", "institution", "country", "phone", "role", "registeredAt"]
+    },
+    "AbstractSubmission": {
+      "title": "AbstractSubmission",
+      "description": "Scientific paper abstract submission details & evaluation log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "presenterName": { "type": "string" },
+        "presenterEmail": { "type": "string" },
+        "institution": { "type": "string" },
+        "track": { "type": "string" },
+        "abstractText": { "type": "string" },
+        "keywords": { "type": "string" },
+        "status": { "type": "string" },
+        "reviewScore": { "type": "integer" },
+        "grammarRating": { "type": "integer" },
+        "noveltyRating": { "type": "integer" },
+        "clarityRating": { "type": "integer" },
+        "peerReviewer": { "type": "string" },
+        "feedback": { "type": "string" },
+        "suggestions": { "type": "string" },
+        "submittedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "title",
+        "presenterName",
+        "presenterEmail",
+        "institution",
+        "track",
+        "abstractText",
+        "keywords",
+        "status",
+        "reviewScore",
+        "grammarRating",
+        "noveltyRating",
+        "clarityRating",
+        "peerReviewer",
+        "feedback",
+        "suggestions",
+        "submittedAt"
+      ]
+    },
+    "FrontPageConfig": {
+      "title": "FrontPageConfig",
+      "description": "Customizable homepage layout & branding configurations",
+      "type": "object",
+      "properties": {
+        "logoText": { "type": "string" },
+        "logoAbbreviation": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "logoSubtitle": { "type": "string" },
+        "heroTitleEn": { "type": "string" },
+        "heroTitleId": { "type": "string" }
+      },
+      "required": ["logoText", "logoAbbreviation"]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "List of registrations for conference attendees and presenters"
+    },
+    "/submissions/{submissionId}": {
+      "schema": "AbstractSubmission",
+      "description": "List of abstract submissions with AI evaluation scores"
+    },
+    "/configs/{configId}": {
+      "schema": "FrontPageConfig",
+      "description": "Unified system-wide front page landing configurations"
+    }
+  }
+}
